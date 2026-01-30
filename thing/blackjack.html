@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Pro - High Stakes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="index.html" class="home-btn">🏠 Home</a>
+
+    <div class="main-layout">
+        <aside class="rules-sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-section">
+                    <h3>House Rules</h3>
+                    <div class="rules-content">
+                        <ul>
+                            <li><strong>Goal:</strong> Beat dealer without exceeding 21.</li>
+                            <li><strong>Blackjack:</strong> Pays 3:2.</li>
+                            <li><strong>Double:</strong> One card only.</li>
+                            <li><strong>Tie:</strong> Dealer wins on 21 ties.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Last Dealer Hand</h3>
+                    <div class="history-area">
+                        <div id="prev-dealer-hand" class="card-display small-cards"></div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Payout Log</h3>
+                    <div id="payout-logger">
+                        <div class="log-entry empty">Waiting for first round...</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Wins</div>
+                            <div id="stat-wins" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Losses</div>
+                            <div id="stat-losses" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Pushes</div>
+                            <div id="stat-pushes" class="stat-value">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reshuffle-text">
+                    Random Reshuffle Chance: 3.14%
+                </div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div id="deck-info">Cards left: <span id="cards-remaining">312</span></div>
+            </div>
+        </aside>
+
+        <div class="game-container">
+            <h1>Blackjack</h1>
+            
+            <div id="insurance-overlay" class="hidden-ui">
+                <div class="insurance-box">
+                    <p>Dealer shows an Ace. Take Insurance?</p>
+                    <div class="insurance-btns">
+                        <button id="insure-yes">Yes (€<span id="insure-cost">0</span>)</button>
+                        <button id="insure-no">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="board">
+                <div class="section">
+                    <div class="score-row">Dealer: <span id="dealer-score">?</span></div>
+                    <div class="card-area"><div id="dealer-cards" class="card-display"></div></div>
+                </div>
+                <div class="section">
+                    <div class="score-row">Player: <span id="player-score">0</span></div>
+                    <div class="card-area"><div id="player-cards" class="card-display"></div></div>
+                </div>
+            </div>
+
+            <div id="timer-wrapper" class="hidden-ui">
+                <div id="progress-container"><div id="progress-bar"></div></div>
+            </div>
+            <p id="message">Place your bet to deal!</p>
+            <div class="controls">
+                <button id="hit-btn" disabled>Hit</button>
+                <button id="double-btn" disabled>Double</button>
+                <button id="stand-btn" disabled>Stand</button>
+            </div>
+        </div>
+
+        <aside class="actions-sidebar">
+            <div class="sidebar-top">
+                <h3>Session</h3>
+                <div class="balance-display">
+                    <div class="bal-label">Balance</div>
+                    <div id="player-balance">€1.000,00</div>
+                    <div class="profit-row">Net Profit: <span id="net-profit">€0,00</span></div>
+                </div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="betting-area">
+                    <div class="chip-grid">
+                        <button class="chip" data-value="0.5">0.50</button>
+                        <button class="chip" data-value="1">1</button>
+                        <button class="chip" data-value="2">2</button>
+                        <button class="chip" data-value="5">5</button>
+                        <button class="chip" data-value="10">10</button>
+                        <button class="chip" data-value="20">20</button>
+                        <button class="chip" data-value="50">50</button>
+                        <button class="chip" data-value="100">100</button>
+                    </div>
+                    
+                    <div class="bet-control-line">
+                        <div id="total-bet">€0,00</div>
+                        <div class="bet-btns">
+                            <button id="rebet-btn" disabled>Rebet</button>
+                            <button id="clear-bet">Clear</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-button-wrapper">
+                    <button id="new-game-btn">Deal Cards</button>
+                    <button id="surrender-btn" class="hidden-ui">Surrender</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

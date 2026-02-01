@@ -74,7 +74,24 @@ document.getElementById('clear-bet').addEventListener('click', () => {
 });
 
 rebetBtn.addEventListener('click', () => {
-    if (lastBet > 0 && balance >= lastBet) { currentBet = lastBet; balance -= lastBet; updateMoneyUI(); }
+    // 1. If there's already a bet on the table, refund it first!
+    if (currentBet > 0) {
+        balance += currentBet;
+        currentBet = 0;
+    }
+
+    // 2. Now try to place the last committed bet
+    if (lastBet > 0 && balance >= lastBet) {
+        currentBet = lastBet;
+        balance -= lastBet;
+        updateMoneyUI();
+        messageEl.textContent = "Rebet successful!";
+    } else if (lastBet > 0) {
+        messageEl.textContent = "Insufficient funds to rebet!";
+        updateMoneyUI(); // Ensure UI is in sync
+    } else {
+        messageEl.textContent = "No previous bet found.";
+    }
 });
 
 function startTimer() {

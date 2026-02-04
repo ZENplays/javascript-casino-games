@@ -28,6 +28,21 @@ body {
 }
 .home-btn:hover { background: rgba(0,0,0,0.8); }
 
+.top-right-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(192, 57, 43, 0.8); /* Red tint */
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 5000;
+}
+.top-right-btn:hover { background: #c0392b; }
+
 .main-layout {
     display: flex;
     width: 95%;
@@ -51,7 +66,13 @@ body {
 }
 
 .rules-sidebar, .actions-sidebar { flex: 0 1 320px; }
-.game-container { flex: 0 1 750px; text-align: center; justify-content: flex-start; position: relative; }
+.game-container { 
+    flex: 0 1 750px; 
+    text-align: center; 
+    justify-content: space-between; /* STICK TABLE TO BOTTOM FIX */
+    position: relative; 
+    padding-bottom: 30px;
+}
 
 /* Sidebars */
 .sidebar-top { flex-grow: 1; }
@@ -129,9 +150,16 @@ h3 { border-bottom: 1px solid #ffcc00; padding-bottom: 5px; margin-top: 0; color
 }
 .card-corner { position: absolute; top: 6px; left: 6px; line-height: 1; font-size: 1.1rem; text-align: center; }
 .card-suit-center { position: absolute; bottom: 6px; right: 6px; font-size: 2.8rem; opacity: 0.15; }
-.red-card { color: #d63031 !important; }
-.card.hidden-card { background: #c0392b !important; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.1) 10px, rgba(255,255,255,.1) 20px) !important; }
-.card.hidden-card div { display: none !important; }
+
+/* FIXED HIDDEN CARD */
+.card.hidden-card {
+    background: #c0392b !important;
+    background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.1) 10px, rgba(255,255,255,.1) 20px),
+        radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%) !important;
+    border: 3px solid #fdfaf0 !important;
+}
+.card.hidden-card * { display: none !important; } /* This hides the suit/number */
 
 .history-area { height: 75px; display: flex; align-items: center; justify-content: center; }
 .small-cards .card { width: 45px; height: 65px; margin-left: -25px; font-size: 0.6rem; border-width: 2px; }
@@ -139,13 +167,11 @@ h3 { border-bottom: 1px solid #ffcc00; padding-bottom: 5px; margin-top: 0; color
 /* --- CHIPS & RIDGES --- */
 .chip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
 .chip {
-    width: 50px; height: 50px; border-radius: 50%; cursor: pointer; 
-    font-weight: 900; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: 0.1s;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.3);
-    border: 3px dashed rgba(255,255,255,0.6);
+    width: 50px; height: 50px; border-radius: 50%; cursor: pointer; font-weight: 900;
+    font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: 0.1s;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.3); border: 3px dashed rgba(255,255,255,0.6);
 }
 .chip:hover { transform: scale(1.05); }
-
 .chip[data-value="0.5"] { background: #dfe6e9; color: #2d3436; border-color: white !important; }
 .chip[data-value="1"] { background: #fdfaf0; color: #2d3436; border-color: #636e72 !important; }
 .chip[data-value="2"] { background: #0984e3; }
@@ -157,13 +183,14 @@ h3 { border-bottom: 1px solid #ffcc00; padding-bottom: 5px; margin-top: 0; color
 
 /* --- MAIN BUTTONS --- */
 .sidebar-button-wrapper { position: relative; height: 60px; width: 100%; }
-#new-game-btn, #surrender-btn {
-    position: absolute; width: 100%; height: 100%; top: 0; left: 0; 
-    font-size: 1.3rem !important; font-weight: 900 !important; border-radius: 12px;
-    text-transform: uppercase; cursor: pointer; border: none;
+#new-game-btn, #surrender-btn, #spin-btn {
+    position: absolute; width: 100%; height: 100%; top: 0; left: 0; font-size: 1.3rem !important;
+    font-weight: 900 !important; border-radius: 12px; text-transform: uppercase; cursor: pointer; border: none;
+    background: #ffcc00; color: #1a3a1c;
 }
-#new-game-btn { background: #ffcc00; color: #1a3a1c; z-index: 2; }
+#new-game-btn { z-index: 2; }
 #surrender-btn { background: #c0392b; color: white; z-index: 1; }
+#spin-btn { z-index: 2; } /* Style matching Deal button */
 
 /* Hit, Stand, Double Controls */
 .controls button { font-weight: 800 !important; text-transform: uppercase; padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 1.1rem; }
@@ -181,3 +208,177 @@ button:disabled { background: #555 !important; opacity: 0.5; cursor: not-allowed
 #message { color: #ffcc00; font-weight: bold; font-size: 1.4rem; height: 50px; display: flex; align-items: center; justify-content: center; }
 
 @keyframes deal { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* --- ROULETTE SPECIFIC --- */
+/* --- ROULETTE TABLE STYLING --- */
+#roulette-table-area {
+    background: #0a240b; 
+    padding: 12px; /* Shrunk padding from 25px to 12px for a tighter fit */
+    border-radius: 12px;
+    border: 2px solid #061607;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    display: inline-block;
+    margin: 0 auto;
+}
+
+/* The Numbers Section */
+.numbers-grid-container {
+    display: flex; 
+    gap: 3px; /* Slightly tighter gap */
+    margin-bottom: 3px;
+}
+
+.green-zero {
+    width: 55px; /* Shrunk from 60px */
+    background: #27ae60;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px 0 0 4px;
+}
+
+#numbers-grid {
+    display: grid;
+    /* Shrunk individual squares from 50px to 48px */
+    grid-template-columns: repeat(12, 48px);
+    grid-template-rows: repeat(3, 48px);
+    grid-auto-flow: column;
+    gap: 3px; /* Shrunk gap from 4px to 3px */
+}
+
+/* Adjusting the Outside Rows to match the new 48px grid math */
+.outside-row, .special-row {
+    display: flex;
+    gap: 3px;
+    margin-top: 3px;
+    margin-left: 58px; /* Adjusted to match new Zero width + gap */
+}
+
+.special-row .bet-node, .outside-box {
+    flex: 1;
+    height: 45px; /* Shrunk height slightly for a more compact look */
+}
+
+.red-bg { 
+    background-color: #c0392b !important; 
+    color: white; 
+}
+.black-bg { 
+    background-color: #2d3436 !important; 
+    color: white; 
+}
+
+/* Ensure nodes show colors properly */
+.bet-node {
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    /* This ensures text is readable on dark backgrounds */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.bet-node:hover {
+    background: rgba(255, 204, 0, 0.3) !important;
+    border-color: #ffcc00;
+}
+
+
+/* WHEEL CONTAINER FIX */
+#wheel-container {
+    height: 80px;
+    width: 250px;
+    background: #000;
+    overflow: hidden !important;
+    position: relative;
+    border: 2px solid #ffcc00;
+    border-radius: 10px;
+    margin: 10px auto;
+}
+
+#wheel-strip {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+    transform: translateX(0);
+}
+
+.wheel-num {
+    min-width: 60px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+#wheel-pointer {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffcc00;
+    z-index: 10;
+    font-size: 1.2rem;
+}
+
+/* --- RACETRACK STYLING --- */
+#racetrack-area {
+    width: 635px; /* Matches the width of the table (12 cols * 48px + gaps + zero) */
+    height: 120px;
+    margin: 0 auto 15px auto;
+    background: #0a240b;
+    border-radius: 60px; /* Creates the cylindrical/oval look */
+    border: 3px solid #061607;
+    position: relative;
+    padding: 10px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#racetrack-path {
+    display: flex;
+    width: 90%;
+    height: 100%;
+    flex-wrap: wrap; /* This allows us to arrange them in a loop */
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+
+.track-node {
+    width: 28px;
+    height: 35px;
+    font-size: 0.7rem;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- SIDEBAR DIVIDER --- */
+.sidebar-divider {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, transparent, #ffcc00, transparent);
+    margin: 10px 0 15px 0;
+    opacity: 0.5;
+}
+
+/* Ensure message doesn't overlap */
+.message-area {
+    padding-bottom: 5px;
+    display: block;
+}

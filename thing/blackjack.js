@@ -1,16 +1,30 @@
+// --- THE VAULT (LocalStorage) ---
+// This ensures your money carries over to Roulette or the Home page
+let balance = parseFloat(localStorage.getItem('casino_balance'));
+if (isNaN(balance)) {
+    balance = 1000;
+    localStorage.setItem('casino_balance', balance);
+}
+
+function syncVault() {
+    localStorage.setItem('casino_balance', balance);
+}
+
+// --- STATE MANAGEMENT ---
 let shoe = [], playerHand = [], dealerHand = [];
 let wins = 0, losses = 0, pushes = 0, totalProfit = 0, lastBet = 0, timerInterval;
-let balance = 1000, currentBet = 0, insuranceBet = 0;
+let currentBet = 0, insuranceBet = 0;
 
 const TIME_LIMIT = 10, DECKS_IN_SHOE = 6, RANDOM_SHUFFLE_CHANCE = 0.0314;
 
-// Elements
+// --- DOM ELEMENTS ---
 const hitBtn = document.getElementById('hit-btn');
 const standBtn = document.getElementById('stand-btn');
 const doubleBtn = document.getElementById('double-btn');
 const newGameBtn = document.getElementById('new-game-btn');
 const surrenderBtn = document.getElementById('surrender-btn');
 const rebetBtn = document.getElementById('rebet-btn');
+const resetBalBtn = document.getElementById('reset-balance-btn'); // New Reset Button
 const messageEl = document.getElementById('message');
 const progressBar = document.getElementById('progress-bar');
 const timerWrapper = document.getElementById('timer-wrapper');
@@ -28,6 +42,7 @@ const insureCostEl = document.getElementById('insure-cost');
 
 const fmt = (val) => val.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 
+// --- UI UPDATES ---
 function updateMoneyUI() {
     balanceEl.textContent = fmt(balance);
     betEl.textContent = fmt(currentBet);
@@ -47,6 +62,7 @@ function logPayout(amount, type, customMsg) {
     if (payoutLog.children.length > 5) payoutLog.lastChild.remove();
 }
 
+// --- INITIALIZATION ---
 function initShoe() {
     let s = [];
     const suits = ['♠', '♣', '♥', '♦'], vals = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -62,38 +78,54 @@ function initShoe() {
     updateDeckUI();
 }
 
+// --- BETTING & RESET ---
 document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
         const val = parseFloat(chip.dataset.value);
-        if (balance >= val) { currentBet += val; balance -= val; updateMoneyUI(); }
+        const MAX_TABLE_LIMIT = 500;
+
+        if (currentBet + val > MAX_TABLE_LIMIT) {
+            messageEl.textContent = "Table Limit reached! Max bet is €500.";
+            return; // Stop the code here
+        }
+
+        if (balance >= val) {
+            currentBet += val; 
+            balance -= val; 
+            updateMoneyUI();
+            syncVault(); 
+        }
     });
 });
 
 document.getElementById('clear-bet').addEventListener('click', () => {
-    balance += currentBet; currentBet = 0; updateMoneyUI();
+    balance += currentBet; currentBet = 0;
+    updateMoneyUI();
+    syncVault();
 });
 
 rebetBtn.addEventListener('click', () => {
-    // 1. If there's already a bet on the table, refund it first!
-    if (currentBet > 0) {
-        balance += currentBet;
-        currentBet = 0;
-    }
-
-    // 2. Now try to place the last committed bet
+    if (currentBet > 0) { balance += currentBet; currentBet = 0; }
     if (lastBet > 0 && balance >= lastBet) {
-        currentBet = lastBet;
-        balance -= lastBet;
+        currentBet = lastBet; balance -= lastBet;
         updateMoneyUI();
-        messageEl.textContent = "Rebet successful!";
+        syncVault();
     } else if (lastBet > 0) {
         messageEl.textContent = "Insufficient funds to rebet!";
-        updateMoneyUI(); // Ensure UI is in sync
-    } else {
-        messageEl.textContent = "No previous bet found.";
     }
 });
 
+resetBalBtn.addEventListener('click', () => {
+    if (confirm("Reset balance to €1.000,00? Current progress will be lost.")) {
+        balance = 1000;
+        totalProfit = 0;
+        syncVault();
+        updateMoneyUI();
+        location.reload(); 
+    }
+});
+
+// --- GAMEPLAY TIMER ---
 function startTimer() {
     clearInterval(timerInterval);
     let start = Date.now();
@@ -109,10 +141,12 @@ function startTimer() {
     }, 50);
 }
 
+// --- GAME FLOW ---
 async function startGame() {
     if (currentBet <= 0) { messageEl.textContent = "Place a bet first!"; return; }
     clearInterval(timerInterval);
     
+    // Shuffle logic
     if (shoe.length < 52 || Math.random() < RANDOM_SHUFFLE_CHANCE) {
         messageEl.textContent = "Reshuffling Shoe...";
         initShoe(); await sleep(1000);
@@ -152,7 +186,8 @@ function checkInitialState() {
 
 document.getElementById('insure-yes').addEventListener('click', () => {
     let cost = currentBet / 2; balance -= cost; insuranceBet = cost;
-    updateMoneyUI(); insuranceOverlay.classList.add('hidden-ui'); checkInitialState();
+    updateMoneyUI(); syncVault();
+    insuranceOverlay.classList.add('hidden-ui'); checkInitialState();
 });
 
 document.getElementById('insure-no').addEventListener('click', () => {
@@ -208,7 +243,8 @@ standBtn.addEventListener('click', handleStand);
 doubleBtn.addEventListener('click', async () => {
     if (balance >= currentBet) {
         balance -= currentBet; currentBet *= 2;
-        updateMoneyUI(); toggleControls(false);
+        updateMoneyUI(); syncVault();
+        toggleControls(false);
         await dealToPlayer();
         if (getScore(playerHand) > 21) endGame("Bust! Dealer Wins.");
         else handleStand();
@@ -268,7 +304,9 @@ function endGame(msg) {
         totalProfit -= refund; losses++; logPayout(refund, 'loss', `Surrendered: -${fmt(refund)}`);
     }
     
-    currentBet = 0; insuranceBet = 0; updateMoneyUI();
+    currentBet = 0; insuranceBet = 0; 
+    syncVault(); // Save final round state
+    updateMoneyUI();
     statWinsEl.textContent = wins; statLossesEl.textContent = losses; statPushesEl.textContent = pushes;
     toggleBetting(true); prevHandEl.innerHTML = '';
     dealerHand.forEach(c => renderCard(c, 'prev-dealer-hand', false));
@@ -287,5 +325,7 @@ function toggleBetting(on) {
 
 newGameBtn.addEventListener('click', startGame);
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Start
 initShoe();
 updateMoneyUI();

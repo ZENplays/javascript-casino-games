@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Casino - Roulette</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="roulette-page"> 
+    <a href="index.html" class="home-btn">🏠 Home</a>
+    <button id="reset-balance-btn" class="top-right-btn">Reset Balance</button>
+
+    <div class="main-layout">
+        <aside class="rules-sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-section">
+                    <h3>Winning Number</h3>
+                    <div id="wheel-container">
+                        <div id="wheel-pointer">▼</div>
+                        <div id="wheel-strip"></div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Last 10 Results</h3>
+                    <div id="number-history" class="history-grid">
+                        </div>
+                </div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Session Win</div>
+                        <div id="stat-wins" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Session Loss</div>
+                        <div id="stat-losses" class="stat-value">0</div>
+                    </div>
+                </div>
+                <div class="reshuffle-text">European Rules • Single Zero</div>
+            </div>
+        </aside>
+
+        <div class="game-container">
+            <h1>Grand Roulette</h1>
+
+            <div id="racetrack-area">
+                <div id="racetrack-path">
+                    </div>
+            </div>
+
+            <div id="roulette-table-area">
+                <div class="numbers-grid-container">
+                    <div id="bet-0" class="bet-node green-zero">0</div>
+                    <div id="numbers-grid"></div>
+                </div>
+                <div class="outside-row dozens-row">
+                    <div class="bet-node outside-box">1st 12</div>
+                    <div class="bet-node outside-box">2nd 12</div>
+                    <div class="bet-node outside-box">3rd 12</div>
+                </div>
+                <div class="special-row">
+                    <div class="bet-node outside-box">Even</div>
+                    <div class="bet-node red-bg">RED</div>
+                    <div class="bet-node black-bg">BLACK</div>
+                    <div class="bet-node outside-box">Odd</div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="actions-sidebar">
+            <div class="sidebar-bottom">
+                <div id="message" class="message-area">Select a chip and place your bets</div>
+                
+                <hr class="sidebar-divider">
+                
+                <div class="chip-grid">
+                    <button class="chip" data-value="0.5">0.5</button>
+                    <button class="chip" data-value="1">1</button>
+                    <button class="chip" data-value="2">2</button>
+                    <button class="chip" data-value="5">5</button>
+                    <button class="chip" data-value="10">10</button>
+                    <button class="chip" data-value="20">20</button>
+                    <button class="chip" data-value="50">50</button>
+                    <button class="chip" data-value="100">100</button>
+                </div>
+                
+                <div class="bet-control-line">
+                    <div id="total-bet">€0,00</div>
+                    <button id="clear-bet">Clear</button>
+                </div>
+
+                <div class="sidebar-button-wrapper">
+                    <button id="spin-btn">SPIN WHEEL</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+    <script src="roulette.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Casino - Lobby</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific Hub Styles */
+        .hub-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .game-link {
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Re-using your button style for the game cards */
+        .game-card {
+            background: #1a3a1c;
+            border: 2px solid #ffcc00;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            background: #245026;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+        }
+
+        .game-card h2 {
+            color: #ffcc00;
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+        }
+
+        .game-card p {
+            color: #ffffff;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        .hub-footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <button id="reset-balance-btn" class="top-right-btn">Reset Balance</button>
+
+    <div class="main-layout" style="align-items: center;">
+        <div class="game-container" style="height: auto; max-width: 600px; padding: 3rem;">
+            <h1>Grand Casino</h1>
+            
+            <div class="balance-display" style="text-align: center; margin-bottom: 30px;">
+                <div class="bal-label">Your Total Bankroll</div>
+                <div id="player-balance" style="font-size: 3rem;">€0,00</div>
+            </div>
+
+            <div class="hub-content">
+                <a href="blackjack.html" class="game-link">
+                    <div class="game-card">
+                        <h2>Blackjack</h2>
+                        <p>Table Limit: €500.00 • 3:2 Payouts</p>
+                    </div>
+                </a>
+
+                <a href="roulette.html" class="game-link">
+                    <div class="game-card">
+                        <h2>Roulette</h2>
+                        <p>European Rules • Coming Soon</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="hub-footer">
+                Please play responsibly.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Hub Logic ---
+        function updateHubUI() {
+            const bal = localStorage.getItem('casino_balance') || 1000;
+            document.getElementById('player-balance').textContent = 
+                parseFloat(bal).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+        }
+
+        // Reset Balance logic for the Hub
+        document.getElementById('reset-balance-btn').addEventListener('click', () => {
+            if (confirm("Reset balance to €1.000,00?")) {
+                localStorage.setItem('casino_balance', 1000);
+                updateHubUI();
+            }
+        });
+
+        // Initialize
+        updateHubUI();
+    </script>
+</body>
+</html>
